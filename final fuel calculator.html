@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuel Cost Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 12px;
+            color: #333;
+            font-size: 13px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+        .description {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-title {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #3498db;
+            text-align: center;
+        }
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            gap: 10px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            color: #2c3e50;
+            width: 140px;
+            font-size: 14px;
+            text-align: right;
+        }
+        input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            min-width: 120px;
+            transition: border-color 0.2s;
+        }
+        input:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        .radio-options {
+            display: flex;
+            gap: 20px;
+            margin-top: 5px;
+            margin-left: 140px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+        .radio-circle {
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-right: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+        .radio-circle::after {
+            content: "";
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: transparent;
+            transition: all 0.2s;
+        }
+        .radio-option input[type="radio"]:checked + .radio-circle {
+            border-color: #3498db;
+        }
+        .radio-option input[type="radio"]:checked + .radio-circle::after {
+            background-color: #3498db;
+        }
+        .radio-option:hover .radio-circle {
+            border-color: #3498db;
+        }
+        .example {
+            font-size: 12px;
+            color: #7f8c8d;
+            margin-top: 5px;
+            margin-left: 140px;
+            font-style: italic;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        button {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 180px;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        button:active {
+            transform: translateY(0);
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4fc;
+            border-radius: 6px;
+            font-size: 14px;
+            border-left: 4px solid #3498db;
+            display: none;
+        }
+        .disclaimer {
+            margin-top: 20px;
+            padding: 12px;
+            background-color: #fff4e6;
+            border-radius: 6px;
+            font-size: 12px;
+            border-left: 4px solid #ffa94d;
+            color: #8c6d2c;
+            text-align: center;
+        }
+        .good-luck {
+            margin-top: 15px;
+            text-align: center;
+            padding: 10px;
+            background: linear-gradient(135deg, #e0f7fa 0%, #b2ebf2 100%);
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #006064;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 20px;
+            }
+            .input-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            label {
+                width: 100%;
+                text-align: left;
+            }
+            input {
+                width: 100%;
+            }
+            .radio-options {
+                margin-left: 0;
+                justify-content: flex-start;
+                gap: 15px;
+            }
+            .example {
+                margin-left: 0;
+            }
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #7f8c8d;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-gas-pump"></i> Fuel Cost Calculator</h1>
+            <p class="description">Easily calculate your car's fuel consumption and cost</p>
+        </header>
+
+        <div class="form-group">
+            <div class="form-title">Calculate by Distance</div>
+            
+            <div class="input-container">
+                <div class="input-row">
+                    <label for="distance">Distance:</label>
+                    <input type="number" id="distance" placeholder="Enter distance" min="0" step="0.1">
+                </div>
+                <div class="radio-options">
+                    <label class="radio-option">
+                        <input type="radio" name="distance-unit" value="km" checked>
+                        <span class="radio-circle"></span>
+                        km
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="distance-unit" value="miles">
+                        <span class="radio-circle"></span>
+                        miles
+                    </label>
+                </div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-row">
+                    <label for="consumption">Fuel Consumption:</label>
+                    <input type="number" id="consumption" placeholder="Enter value" min="0" step="0.1">
+                </div>
+                <div class="radio-options">
+                    <label class="radio-option">
+                        <input type="radio" name="consumption-unit" value="l100km" checked>
+                        <span class="radio-circle"></span>
+                        L/100km
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="consumption-unit" value="mpg">
+                        <span class="radio-circle"></span>
+                        MPG
+                    </label>
+                </div>
+                <div class="example" id="consumption-example">Example: 7.5 (for 7.5 liters per 100km)</div>
+            </div>
+            
+            <div class="input-container">
+                <div class="input-row">
+                    <label for="price">Fuel Price:</label>
+                    <input type="number" id="price" placeholder="Enter price" min="0" step="0.01">
+                </div>
+                <div class="radio-options">
+                    <label class="radio-option">
+                        <input type="radio" name="price-unit" value="euro-liter" checked>
+                        <span class="radio-circle"></span>
+                        €/L
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="price-unit" value="pound-liter">
+                        <span class="radio-circle"></span>
+                        £/L
+                    </label>
+                    <label class="radio-option">
+                        <input type="radio" name="price-unit" value="dollar-gallon">
+                        <span class="radio-circle"></span>
+                        $/gal
+                    </label>
+                </div>
+                <div class="example" id="price-example">Example: 1.85 (for €1.85 per liter)</div>
+            </div>
+        </div>
+        
+        <div class="button-container">
+            <button onclick="calculateCost()"><i class="fas fa-calculator"></i> Calculate Cost</button>
+        </div>
+        
+        <div id="result" class="result">
+            <!-- Results will appear here -->
+        </div>
+        
+        <div class="disclaimer">
+            <p><strong><i class="fas fa-exclamation-circle"></i> Disclaimer:</strong> This is a personal project. Conversion rates are approximate and for calculation purposes only. Actual fuel prices and conversion rates may vary.</p>
+        </div>
+        
+        <div class="good-luck">
+            <i class="fas fa-car"></i> Happy travels and safe journeys! <i class="fas fa-road"></i>
+        </div>
+
+        <footer>
+            <p>fuel cost calculator created by Vasilis</p>
+        </footer>
+    </div>
+
+    <script>
+        // Current units
+        let currentUnits = {
+            distanceUnit: 'km',
+            consumptionUnit: 'l100km',
+            priceUnit: 'euro-liter'
+        };
+        
+        // Update examples based on selected units
+        function updateExamples() {
+            // Consumption examples
+            const consumptionUnit = document.querySelector('input[name="consumption-unit"]:checked').value;
+            if (consumptionUnit === 'l100km') {
+                document.getElementById('consumption-example').textContent = 'Example: 7.5 (for 7.5 liters per 100km)';
+            } else {
+                document.getElementById('consumption-example').textContent = 'Example: 35 (for 35 miles per gallon)';
+            }
+            
+            // Price examples
+            const priceUnit = document.querySelector('input[name="price-unit"]:checked').value;
+            if (priceUnit === 'euro-liter') {
+                document.getElementById('price-example').textContent = 'Example: 1.85 (for €1.85 per liter)';
+            } else if (priceUnit === 'pound-liter') {
+                document.getElementById('price-example').textContent = 'Example: 1.65 (for £1.65 per liter)';
+            } else {
+                document.getElementById('price-example').textContent = 'Example: 4.50 (for $4.50 per gallon)';
+            }
+        }
+        
+        // Convert MPG to L/100km
+        function mpgToL100km(mpg) {
+            return 235.214583 / mpg;
+        }
+        
+        // Calculate fuel cost
+        function calculateCost() {
+            // Get values from input fields
+            const distance = parseFloat(document.getElementById('distance').value);
+            const consumption = parseFloat(document.getElementById('consumption').value);
+            const price = parseFloat(document.getElementById('price').value);
+            
+            // Get selected units
+            currentUnits.distanceUnit = document.querySelector('input[name="distance-unit"]:checked').value;
+            currentUnits.consumptionUnit = document.querySelector('input[name="consumption-unit"]:checked').value;
+            currentUnits.priceUnit = document.querySelector('input[name="price-unit"]:checked').value;
+            
+            // Check if all fields are filled correctly
+            if (isNaN(distance) || isNaN(consumption) || isNaN(price)) {
+                document.getElementById('result').innerHTML = "⚠️ Please fill all fields with valid numeric values.";
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result').style.borderLeft = '4px solid #e74c3c';
+                return;
+            }
+            
+            if (distance <= 0 || consumption <= 0 || price <= 0) {
+                document.getElementById('result').innerHTML = "⚠️ Values must be greater than zero.";
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result').style.borderLeft = '4px solid #e74c3c';
+                return;
+            }
+            
+            // Convert to common units for calculation (km and L/100km)
+            let distanceInKm = distance;
+            if (currentUnits.distanceUnit === 'miles') {
+                distanceInKm = distance * 1.60934;
+            }
+            
+            let consumptionInL100km = consumption;
+            if (currentUnits.consumptionUnit === 'mpg') {
+                consumptionInL100km = mpgToL100km(consumption);
+            }
+            
+            // Adjust price if needed (convert everything to euros per liter)
+            let pricePerLiter = price;
+            let currencySymbol = '€';
+            
+            if (currentUnits.priceUnit === 'pound-liter') {
+                currencySymbol = '£';
+                // Assuming 1 pound = 1.16 euros (this would ideally come from an API)
+                pricePerLiter = price * 1.16;
+            } else if (currentUnits.priceUnit === 'dollar-gallon') {
+                currencySymbol = '$';
+                // Convert dollars per gallon to euros per liter
+                // Assuming 1 dollar = 0.85 euros (this would ideally come from an API)
+                pricePerLiter = (price * 0.85) / 3.78541;
+            }
+            
+            // Calculate the cost
+            const totalLiters = (distanceInKm / 100) * consumptionInL100km;
+            let totalCost = totalLiters * pricePerLiter;
+            
+            // Format distance and consumption for display
+            let displayDistance = distance;
+            let displayDistanceUnit = currentUnits.distanceUnit;
+            let displayConsumption = consumption;
+            let displayConsumptionUnit = currentUnits.consumptionUnit === 'l100km' ? 'L/100km' : 'mpg';
+            
+            // Format price for display
+            let displayPrice = price;
+            let displayPriceUnit = '';
+            
+            if (currentUnits.priceUnit === 'euro-liter') {
+                displayPriceUnit = '€/L';
+            } else if (currentUnits.priceUnit === 'pound-liter') {
+                displayPriceUnit = '£/L';
+            } else {
+                displayPriceUnit = '$/gal';
+            }
+            
+            // Display the result
+            document.getElementById('result').innerHTML = 
+                `<div style="font-size: 16px; color: #2c3e50; margin-bottom: 10px; text-align: center;">
+                    <i class="fas fa-file-invoice-dollar"></i> Calculation Results
+                 </div>
+                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>Distance:</span>
+                    <span><strong>${displayDistance} ${displayDistanceUnit}</strong></span>
+                 </div>
+                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>Consumption:</span>
+                    <span><strong>${displayConsumption} ${displayConsumptionUnit}</strong></span>
+                 </div>
+                 <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                    <span>Price:</span>
+                    <span><strong>${displayPrice} ${displayPriceUnit}</strong></span>
+                 </div>
+                 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 15px;">
+                    <span>Fuel needed:</span>
+                    <span><strong style="color: #3498db;">${totalLiters.toFixed(2)} liters</strong></span>
+                 </div>
+                 <div style="display: flex; justify-content: space-between; font-size: 18px; border-top: 1px solid #ccc; padding-top: 10px;">
+                    <span>Total cost:</span>
+                    <span><strong style="color: #27ae54;">${totalCost.toFixed(2)} ${currencySymbol}</strong></span>
+                 </div>`;
+            
+            document.getElementById('result').style.display = 'block';
+        }
+        
+        // Enable calculation with Enter key
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        calculateCost();
+                    }
+                });
+            });
+            
+            // Add event listeners to radio buttons
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.addEventListener('change', updateExamples);
+            });
+            
+            // Initialize examples
+            updateExamples();
+        });
+    </script>
+</body>
+</html>
